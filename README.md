@@ -50,7 +50,7 @@ The objective of this project is to use SQL to answer important business questio
 Sales were calculated using:
 
 ```sql
-SUM(unit_price * transaction_qty)
+SUM(unit_price * transaction_qty);
 ```
 Monthly sales were then compared using the LAG() window function.
 
@@ -62,7 +62,7 @@ KPIs
 - Difference between Current and Previous Month Orders
 Orders were calculated using:
 ```sql
-COUNT(transaction_id)
+COUNT(transaction_id);
 ```
 ## 3. Total Quantity Sold Analysis
 KPIs
@@ -72,7 +72,7 @@ KPIs
 - Difference between Current and Previous Month Quantity
 Quantity was calculated using:
 ```sql
-SUM(transaction_qty)
+SUM(transaction_qty);
 ```
 ## 🧹 Data Cleaning & Preparation
 Before performing the analysis, the dataset was checked and prepared using SQL.
@@ -138,7 +138,7 @@ MODIFY COLUMN transaction_time TIME;
 ```
 This allowed time-based analysis using functions such as:
 ```sql
-HOUR()
+HOUR();
 ```
 Step 8: Handle Column Naming Issues
 The dataset contained a column-name formatting issue caused by an unwanted character in the transaction ID column.
@@ -174,27 +174,27 @@ This helped identify which columns required additional data-quality checks.
 Monthly Sales Analysis
 Monthly sales were calculated using:
 ```sql
-SUM(unit_price * transaction_qty)
+SUM(unit_price * transaction_qty);
 ```
 The LAG() window function was used to compare the current month with the previous month.
 MoM Formula
 ```sql
 MoM % Change =
 (Current Month Sales - Previous Month Sales)
------------------------------------------------- × 100
+------------------------------------------------ × 100;
 Previous Month Sales
 ```
 This helps identify whether sales increased or decreased compared with the previous month.
 ## 📦 Monthly Order Analysis
 Monthly orders were calculated using:
 ```sql
-COUNT(transaction_id)
+COUNT(transaction_id);
 ```
 The LAG() function was used to compare the current month's orders with the previous month.
 ## 📊 Monthly Quantity Analysis
-```sql
 Total quantity sold was calculated using:
-SUM(transaction_qty)
+```sql
+SUM(transaction_qty);
 ```
 The same MoM approach was used to analyze changes in quantity sold.
 ## 📅 Calendar / Daily Sales Analysis
@@ -219,7 +219,7 @@ Sales were divided into:
 - Weekends → Saturday and Sunday
 SQL function used:
 ```sql
-DAYOFWEEK()
+DAYOFWEEK();
 ```
 This analysis helps understand differences between weekday and weekend sales performance.
 ## 🏪 Store Location Analysis
@@ -237,7 +237,7 @@ This identifies store locations based on their sales contribution.
 ## 📅 Daily Sales Analysis
 Daily sales were calculated using:
 ```sql
-DAY(transaction_date)
+DAY(transaction_date);
 ```
 The analysis provides:
 - Daily sales
@@ -252,7 +252,7 @@ An average sales benchmark was calculated and individual days were classified as
 Sales were analyzed across product categories.
 Example categories can be evaluated using:
 ```sql
-GROUP BY product_category
+GROUP BY product_category;
 ```
 The results help identify which product categories contribute the most to overall sales.
 ## 🏆 Top 10 Products by Sales
@@ -265,11 +265,11 @@ This helps identify the products contributing the highest sales.
 ## ⏰ Sales by Day and Hour
 Time-based analysis was performed using:
 ```sql
-DAYOFWEEK(transaction_date)
+DAYOFWEEK(transaction_date);
 ```
 and:
 ```sql
-HOUR(transaction_time)
+HOUR(transaction_time);
 ```
 The analysis can identify sales patterns based on:
 - Day of the week
