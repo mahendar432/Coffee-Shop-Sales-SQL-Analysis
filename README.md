@@ -51,7 +51,7 @@ Sales were calculated using:
 
 ```sql
 SUM(unit_price * transaction_qty)
-
+```
 Monthly sales were then compared using the LAG() window function.
 
 ## 2. Total Orders Analysis
@@ -61,8 +61,9 @@ KPIs
 - MoM Percentage Change in Orders
 - Difference between Current and Previous Month Orders
 Orders were calculated using:
+```sql
 COUNT(transaction_id)
-
+```
 ## 3. Total Quantity Sold Analysis
 KPIs
 - Total Quantity Sold
@@ -70,19 +71,22 @@ KPIs
 - MoM Quantity Percentage Change
 - Difference between Current and Previous Month Quantity
 Quantity was calculated using:
+```sql
 SUM(transaction_qty)
-
+```
 ## 🧹 Data Cleaning & Preparation
 Before performing the analysis, the dataset was checked and prepared using SQL.
 Step 1: Check Total Number of Records
+```sql
 SELECT COUNT(*) AS total_rows
 FROM coffee;
-
+```
 This was used to verify the number of records in the dataset.
 
 Step 2: Inspect Table Structure
+```sql
 DESCRIBE coffee;
-
+```
 This helped understand:
 - Column names
 - Data types
@@ -90,6 +94,7 @@ This helped understand:
 
 Step 3: Identify Date Format
 The transaction date column was checked to understand the format of the existing values.
+```sql
 SELECT 
     CASE
         WHEN transaction_date LIKE '____-__-__' THEN 'YYYY-MM-DD'
@@ -99,46 +104,57 @@ SELECT
     COUNT(*) AS total_rows
 FROM coffee
 GROUP BY date_format;
-
+```
 Step 4: Check Invalid Dates
+```sql
 SELECT COUNT(*) AS invalid_date
 FROM coffee
 WHERE STR_TO_DATE(transaction_date, '%c/%e/%Y') IS NULL;
+```
 This was used to identify invalid date values before conversion.
 
 Step 5: Standardize the Date Values
 The original date values were converted into a standardized date format.
+```sql
 UPDATE coffee
 SET transaction_date =
     DATE_FORMAT(
         STR_TO_DATE(transaction_date, '%c/%e/%Y'),
         '%Y-%m-%d'
     );
+```
 
 Step 6: Convert Date Column to DATE
+```sql
 ALTER TABLE coffee
 MODIFY COLUMN transaction_date DATE;
+```
 This changed the column data type from text/string to a proper MySQL DATE.
 
 Step 7: Convert Transaction Time
+```sql
 ALTER TABLE coffee
 MODIFY COLUMN transaction_time TIME;
-
+```
 This allowed time-based analysis using functions such as:
+```sql
 HOUR()
-
+```
 Step 8: Handle Column Naming Issues
 The dataset contained a column-name formatting issue caused by an unwanted character in the transaction ID column.
 The column was renamed and its definition was standardized.
+```sql
 ALTER TABLE coffee
 CHANGE COLUMN transaction_id Transaction_id INT;
-
+```
 and finally:
+```sql
 ALTER TABLE coffee
 CHANGE COLUMN Transaction_id transaction_id INT;
-
+```
 Step 9: Check NULL Values
 NULL values were checked across the important columns.
+```sql
 SELECT
     SUM(transaction_id IS NULL) AS transaction_id_nulls,
     SUM(transaction_date IS NULL) AS transaction_date_nulls,
@@ -152,30 +168,34 @@ SELECT
     SUM(product_type IS NULL) AS product_type_nulls,
     SUM(product_detail IS NULL) AS product_detail_nulls
 FROM coffee;
-
+```
 This helped identify which columns required additional data-quality checks.
 ## 📈 SQL Analysis
 Monthly Sales Analysis
 Monthly sales were calculated using:
+```sql
 SUM(unit_price * transaction_qty)
-
+```
 The LAG() window function was used to compare the current month with the previous month.
 MoM Formula
+```sql
 MoM % Change =
 (Current Month Sales - Previous Month Sales)
 ------------------------------------------------ × 100
 Previous Month Sales
-
+```
 This helps identify whether sales increased or decreased compared with the previous month.
 ## 📦 Monthly Order Analysis
 Monthly orders were calculated using:
+```sql
 COUNT(transaction_id)
-
+```
 The LAG() function was used to compare the current month's orders with the previous month.
 ## 📊 Monthly Quantity Analysis
+```sql
 Total quantity sold was calculated using:
 SUM(transaction_qty)
-
+```
 The same MoM approach was used to analyze changes in quantity sold.
 ## 📅 Calendar / Daily Sales Analysis
 Daily sales metrics were prepared for calendar-based analysis.
@@ -184,23 +204,27 @@ The following KPIs were calculated for a selected date:
 - Total Orders
 - Total Quantity Sold
 Example:
+```sql
 SELECT
     CONCAT(ROUND(SUM(unit_price * transaction_qty) / 1000, 1), 'K') AS total_sales,
     CONCAT(ROUND(COUNT(transaction_id) / 1000, 1), 'K') AS total_orders,
     CONCAT(ROUND(SUM(transaction_qty) / 1000, 1), 'K') AS total_qty_sold
 FROM coffee
 WHERE transaction_date = '2023-03-27';
+```
 
 ## 🗓️ Weekday vs Weekend Analysis
 Sales were divided into:
 - Weekdays → Monday to Friday
 - Weekends → Saturday and Sunday
 SQL function used:
+```sql
 DAYOFWEEK()
-
+```
 This analysis helps understand differences between weekday and weekend sales performance.
 ## 🏪 Store Location Analysis
 Sales were analyzed across different store locations.
+```sql
 SELECT 
     store_location,
     SUM(unit_price * transaction_qty) AS total_sales
@@ -208,12 +232,13 @@ FROM coffee
 WHERE MONTH(transaction_date) = 5
 GROUP BY store_location
 ORDER BY total_sales DESC;
-
+```
 This identifies store locations based on their sales contribution.
 ## 📅 Daily Sales Analysis
 Daily sales were calculated using:
+```sql
 DAY(transaction_date)
-
+```
 The analysis provides:
 - Daily sales
 - Average daily sales
@@ -226,21 +251,26 @@ An average sales benchmark was calculated and individual days were classified as
 ## ☕ Product Category Analysis
 Sales were analyzed across product categories.
 Example categories can be evaluated using:
+```sql
 GROUP BY product_category
-
+```
 The results help identify which product categories contribute the most to overall sales.
 ## 🏆 Top 10 Products by Sales
 The top 10 products were identified using:
+```sql
 ORDER BY SUM(unit_price * transaction_qty) DESC
 LIMIT 10;
-
+```
 This helps identify the products contributing the highest sales.
 ## ⏰ Sales by Day and Hour
 Time-based analysis was performed using:
+```sql
 DAYOFWEEK(transaction_date)
+```
 and:
+```sql
 HOUR(transaction_time)
-
+```
 The analysis can identify sales patterns based on:
 - Day of the week
 - Hour of the day
